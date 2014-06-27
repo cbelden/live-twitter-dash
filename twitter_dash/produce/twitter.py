@@ -40,11 +40,11 @@ class CustomStreamListener(tweepy.StreamListener):
 class TwitterFeedProducer(gevent.Greenlet):
 	"""Defines a Greenlet that publishes twitter data to redis."""
 	
-	def __init__(self, filtering):
+	def __init__(self, track):
 		"""Creates instance of CustomStreamListener."""
 
 		self._stream_listener = CustomStreamListener()
-		self._filtering = filtering
+		self._tracking = track
 
 		# Call gevent.Greenlet constructor
 		super(TwitterFeedProducer, self).__init__()
@@ -62,4 +62,4 @@ class TwitterFeedProducer(gevent.Greenlet):
 
 		# Listen to the stream of tweets containing the words/hashtags in 'filtering'
 		stream = tweepy.Stream(oauth, self._stream_listener)
-		stream.filter(track=self._filtering)
+		stream.filter(track=self._tracking)
