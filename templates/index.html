@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Twitter Dash</title>
+    <link rel="shortcut icon" href="{{url_for('static', filename='img/raspberry-pi.png')}}">
+    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
+    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='js/main.js')}}"></script>
+</head>
+<body>
+
+	<div class='title-bar main-title'><h1>twitter dash - a live updating twitter stream</h1></div>
+	<div class='column'>
+	    <div class='twitter widget' id='twitter'>
+	    	<div class='title-bar'><h2>Filtering - #{{filtering}}</h2></div>
+			<div class='twitter-container container'></div>
+	    </div>
+	</div>
+    
+</body>
+</html>
