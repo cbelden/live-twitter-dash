@@ -1,11 +1,10 @@
 from flask import Flask, render_template
 from flask.ext.socketio import SocketIO, request
-from consume import Consumer
-from produce import TwitterFeedProducer
+from twitter_dash import Consumer, TwitterFeedProducer
 
 
 app = Flask(__name__)
-app.config['SECRET_KEY'] = 'secret' #no idea why i have to specify this
+app.config['SECRET_KEY'] = 'secret' # TODO: find out what this is used for
 socketio =  SocketIO(app)
 
 
@@ -38,5 +37,5 @@ if __name__ == '__main__':
 	producer = TwitterFeedProducer(['usa'])
 	producer.start()
 
-	# Run the web app
+	# Run the web service
 	socketio.run(app)
