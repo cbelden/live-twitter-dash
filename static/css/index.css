@@ -2,11 +2,12 @@ html, body {
     height: 100%;
     margin: 0;
     font-family: Open Sans;
-    background-color: rgb(149, 204, 255);
+    background-color: rgb(226, 226, 255);
 }
 
 h1 {
     margin-top: 0;
+    width: auto;
 }
 
 h2 {
@@ -20,15 +21,14 @@ hr {
 .title-bar {
     padding-left: 2em;
     height: 40px;
-    color: white;
-    background-color: rgb(141, 141, 141);
-    border-radius: 4px 4px 0 0;
+    color: rgb(192, 146, 235);
+    margin-left: auto;
 }
 
 .grey-out {
     position: fixed;
     background-color: rgb(28, 28, 32);
-    opacity: 0.6;
+    opacity: 0.8;
     top: 50px;
     height: 100%;
     width: 100%;
@@ -36,8 +36,7 @@ hr {
 }
 
 .main-title {
-    background-color: rgb(88, 86, 81);
-    border-color: rgb(149, 204, 255);
+    background-color: rgb(134, 67, 219);
     height: 50px;
     color: white;
     position: fixed;
@@ -158,11 +157,14 @@ hr {
 
 .container {
     position: fixed;
-    top: 60px;
+    top: 67px;
     left: 10%;
     width: 80%;
-    height: 92%;
+    height: 88%;
     z-index: 0;
+    background-color: white;
+    border-radius: 4px;
+    border: 2px solid rgb(77, 0, 128);
 }
 
 .tweets {
@@ -174,19 +176,20 @@ hr {
 }
 
 .twitter-data {
-    background-color: rgb(99, 177, 248);
+    border: 2px solid rgb(99, 177, 248);
     border-radius: 8px;
-    color: white;
+    color: rgb(0, 133, 255);
     padding-left: 2%;
     padding-right: 2%;
     overflow: hidden;
     width: 90%;
-    height: 75px;
+    height: 80px;
     overflow: scroll;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 5px;
     margin-top: 5px;
+    vertical-align: middle;
 }
 
 .profile-image {
@@ -202,10 +205,11 @@ hr {
 .tweet-text {
     float: left;
     width: 85%;
-    font-size: medium;
-    margin-top: 5px;
+    font-size: large;
+    margin-top: auto;
+    margin-bottom: auto;
 }
 
 .tweet-text > strong {
-    color: rgb(224, 255, 0);
+    color: rgb(133, 0, 255);
 }
