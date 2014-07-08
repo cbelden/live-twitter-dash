@@ -16,7 +16,7 @@ MAX_INSTANCES_PER_USER = 3
 # Globals used to keep track of Consumer/Producer services
 _producers = {}        	# Stores each Producer service
 _consumers = {}        	# Stores each user's Consumer service
-_namespaces = {}		# Stores each user's namespace (used for the socket location)
+_namespaces = {}		# Stores a list of each user's namespace (used for the socket location)
 
 
 def _create_producer():
@@ -26,8 +26,6 @@ def _create_producer():
     tracking = session['tracking']
     terms = frozenset(tracking)
     user = session['username']
-
-    print _producers
 
     # Remove this client from other streams
     for p_terms, producer in _producers.iteritems():
@@ -76,8 +74,8 @@ def _kill_stream():
         consumer.kill()
         del _consumers[user]
 
-    if producer:
-        producer.remove_client(user)
+        if producer:
+            producer.remove_client(user)
 
 
 @app.before_request
@@ -92,9 +90,11 @@ def index():
     """Sets up the user's Twitter feed Producer."""
 
     # See if user has multiple tabs open (using our service)
-    instance_count = len(session.get('sessids', []))
-    if instance_count > MAX_INSTANCES_PER_USER:
-        return render_template('sorry.html')
+    # user = session["username"]
+    # instance_count = len(_namespaces.get(user, []))
+
+    # if instance_count > MAX_INSTANCES_PER_USER:
+    #     return render_template('sorry.html')
 
     # Return index.html (will begin the socket.io connection)
     return render_template('index.html')
