@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Twitter Dash</title>
-    <link rel="shortcut icon" href="{{url_for('static', filename='img/raspberry-pi.png')}}">
+    <title>Twitter Stream</title>
+    <link rel="shortcut icon" href="{{url_for('static', filename='img/twitter.jpg')}}">
     <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
@@ -12,13 +12,40 @@
 </head>
 <body>
 
-	<div class='title-bar main-title'><h1>twitter dash - a live updating twitter stream</h1></div>
-	<div class='column'>
-	    <div class='twitter widget' id='twitter'>
-	    	<div class='title-bar'><h2>Filtering - #{{track}}</h2></div>
-			<div class='twitter-container container'></div>
-	    </div>
-	</div>
+    <div class="grey-out"></div>
+
+	<div class='main-title title-bar'>
+        <h1>Real-Time Twitter Stream</h1>
+    </div>
+
+    <div class="menu-button">
+        <img src="static/img/settings-icon.png" alt="settings">
+    </div>
+
+    <div class='container' id='twitter'>
+        <div class='title-bar'><h2>Stream</h2></div>
+        <div class='tweets'></div>
+    </div>
+
+    <div class="options-menu">
+        <div class="close-menu button"><img src="static/img/close-icon.png"></div>
+        
+        <h2>Filter Options</h2>
+
+        <div class="menu-row">
+            <textarea class="filter-input" cols="15" rows="1"></textarea>
+            <div class="add-filter button">Add Term</div>
+        </div>
+
+        <div class="filters"></div>
+
+        <div class="menu-row">
+            <div class="start-stream button"><img src="static/img/play.png" alt="Play"></div>
+            <div class="pause-stream button"><img src="static/img/pause.png" alt="Pause"></div>
+        </div>
+
+        <div class="clear-stream button">Clear Stream</div>
+    </div>
     
 </body>
 </html>
