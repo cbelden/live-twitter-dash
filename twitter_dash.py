@@ -1,16 +1,17 @@
-from flask import Flask, render_template, session, escape
+from flask import Flask, render_template, session
 from flask.ext.socketio import SocketIO, request
-from twitter_dash import Consumer, TwitterFeedProducer, DebugTwitterFeedProducer
-import gc
-import logging
+from twitter_dash import StreamConsumer, StreamProducer
 import json
 
 
 # Setup the app
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SECRET_KEY'] = 'some bologna key' # Secret key used for the session module (can identify unique users; built on top of cookies)
+app.config['SECRET_KEY'] = 'some bologna secret key' # Secret key used for the session module (can identify unique users; built on top of cookies)
 socketio =  SocketIO(app)
+MAX_INSTANCES_PER_USER = 3
+
+
 
 # Globals used to keep track of Consumer/Producer services
 _producers = {}        	# Stores each Producer service
@@ -37,7 +38,7 @@ def _create_producer():
     # Create a new producer if it doesn't exist or it has been killed.
     if terms not in _producers or _producers[terms].value:
         # Create a Twitter stream Producer (that filters on the term 'tracking')
-        feed_producer = TwitterFeedProducer(tracking)
+        feed_producer = StreamProducer(tracking)
         feed_producer.start()
         _producers[terms] = feed_producer
 
@@ -59,7 +60,7 @@ def _create_consumer():
 
 	# Create new Consumer
     channel = json.dumps(sorted(tracking))
-    feed_consumer = Consumer(channel, emit)
+    feed_consumer = StreamConsumer(channel, emit)
     feed_consumer.start()
     _consumers[username] = feed_consumer
 
@@ -83,11 +84,17 @@ def _kill_stream():
 def setup():
     """Adds a username to the session object."""
     session['username'] = request.remote_addr
+    print "Recieved new request. IP: ", session['username']
 
 
 @app.route('/')
 def index():
     """Sets up the user's Twitter feed Producer."""
+
+    # See if user has multiple tabs open (using our service)
+    instance_count = len(session.get('sessids', []))
+    if instance_count > MAX_INSTANCES_PER_USER:
+        return render_template('sorry.html')
 
     # Return index.html (will begin the socket.io connection)
     return render_template('index.html')
@@ -96,6 +103,8 @@ def index():
 @socketio.on('connect', namespace='/twitter')
 def on_connect():
     """Saves the socketio namespace context."""
+
+    print "Connected to a socket. sessid: ", request.namespace.socket.sessid
 
     # Save user namespace (used to get the socketio emit function)
     _namespaces[session['username']] = request.namespace

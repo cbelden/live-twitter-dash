@@ -1,2 +1,2 @@
-from consume import Consumer
-from produce import TwitterFeedProducer, DebugTwitterFeedProducer
+from stream_consumer import StreamConsumer
+from stream_producer import StreamProducer, DebugStreamProducer
