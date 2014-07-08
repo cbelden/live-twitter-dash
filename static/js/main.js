@@ -143,11 +143,20 @@ $(document).ready(function() {
             socket.emit('start-stream', {'tracking': terms});
             // Hide menu
             toggleMenu();
+
+            // Show the tracking items on container title
+            var termsText = "";
+            for (var i=0, item; item=terms[i]; i++) {
+                termsText += item + ", ";
+            }
+
+            termsText = termsText.slice(0, -2);
+
+            $(".container .title-bar h2").text('Stream- Filtering on [' + termsText + ']');
         }
         else {
             alert("You need to specify some tracking terms!");
         }
-
     });
 
     // Handle the Pause stream event
