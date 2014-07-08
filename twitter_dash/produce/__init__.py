@@ -1,1 +1,1 @@
-from twitter import TwitterFeedProducer
+from twitter import TwitterFeedProducer, DebugTwitterFeedProducer

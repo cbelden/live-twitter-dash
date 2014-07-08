@@ -1,55 +1,139 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, session, escape
 from flask.ext.socketio import SocketIO, request
-from twitter_dash import Consumer, TwitterFeedProducer
-from collections import namedtuple
+from twitter_dash import Consumer, TwitterFeedProducer, DebugTwitterFeedProducer
+import gc
+import logging
+import json
 
 
+# Setup the app
 app = Flask(__name__)
 app.config['DEBUG'] = True
-twitter_stream = {'track': None, 'producer': None}
-app.config['SECRET_KEY'] = 'secret' # TODO: find out what this is used for
+app.config['SECRET_KEY'] = 'some bologna key' # Secret key used for the session module (can identify unique users; built on top of cookies)
 socketio =  SocketIO(app)
 
+# Globals used to keep track of Consumer/Producer services
+_producers = {}        	# Stores each Producer service
+_consumers = {}        	# Stores each user's Consumer service
+_namespaces = {}		# Stores each user's namespace (used for the socket location)
 
-@app.route('/<tracking>')
-def index(tracking):
-	"""Renders index.html."""
 
-	# Kill current twitter stream
-	if twitter_stream['producer']:
-		twitter_stream['producer'].kill()
+def _create_producer():
+    """Creates a new Producer stream for the terms specified in tracking."""
 
-	# Assign new twitter stream
-	twitter_stream['track'] = tracking
-	twitter_stream['producer'] = TwitterFeedProducer([tracking])
+    # Get user's tracking terms and username
+    tracking = session['tracking']
+    terms = frozenset(tracking)
+    user = session['username']
 
-	# Start the twitter producer
-	twitter_stream['producer'].start()
+    print _producers
 
-	print twitter_stream
+    # Remove this client from other streams
+    for p_terms, producer in _producers.iteritems():
+        if user in producer.clients:
+            if producer.tracking is not tracking:
+                producer.remove_client(user)
 
-	return render_template('index.html', track=tracking)
+    # Create a new producer if it doesn't exist or it has been killed.
+    if terms not in _producers or _producers[terms].value:
+        # Create a Twitter stream Producer (that filters on the term 'tracking')
+        feed_producer = TwitterFeedProducer(tracking)
+        feed_producer.start()
+        _producers[terms] = feed_producer
+
+    # Add this user to the client list
+    _producers[terms].add_client(user)
+
+
+def _create_consumer():
+    """Creates a new redis pub/sub consumer that subscribes to correct channel."""
+
+    # Get user information
+    tracking = session['tracking']
+    username = session['username']
+    emit = _namespaces[username].emit
+
+    # Kill previous consumer (each user only gets one instance)
+    if username in _consumers:
+    	_consumers[username].kill()
+
+	# Create new Consumer
+    channel = json.dumps(sorted(tracking))
+    feed_consumer = Consumer(channel, emit)
+    feed_consumer.start()
+    _consumers[username] = feed_consumer
+
+def _kill_stream():
+    """Kills the current user's Twitter consumer."""
+
+    user = session['username']
+    consumer = _consumers.get(user, None)
+    terms = frozenset(session['tracking'])
+    producer = _producers.get(terms, None)
+
+    if consumer:
+        consumer.kill()
+        del _consumers[user]
+
+    if producer:
+        producer.remove_client(user)
+
+
+@app.before_request
+def setup():
+    """Adds a username to the session object."""
+    session['username'] = request.remote_addr
+
+
+@app.route('/')
+def index():
+    """Sets up the user's Twitter feed Producer."""
+
+    # Return index.html (will begin the socket.io connection)
+    return render_template('index.html')
+
 
 @socketio.on('connect', namespace='/twitter')
 def on_connect():
-	"""Called when a socketio connection is made with the browser."""
+    """Saves the socketio namespace context."""
 
-	# Get request namespace
-	namespace = request.namespace
+    # Save user namespace (used to get the socketio emit function)
+    _namespaces[session['username']] = request.namespace
 
-	# Spawn Twitter consumer
-	twitter_consumer = Consumer('twitter-data', namespace.emit)
-	twitter_consumer.start()
+@socketio.on('start-stream', namespace='/twitter')
+def on_start_stream(msg):
+    """Starts a twitter stream with the terms specifed in the client message."""
 
-@socketio.on('filter-request', namespace='/twitter')
-def on_filter_request(msg):
-	"""Called when a new filter is requeste."""
-	# TODO - kill current twitter feed producer and start a new one.
-	pass
+    print "starting stream"
+    # Set the session tracking items
+    tracking = msg['tracking']
+    session['tracking'] = tracking
+
+    # Create a new Twitter stream Producer/Consumer
+    _create_producer()
+    _create_consumer()
+
+@socketio.on('pause-stream', namespace='/twitter')
+def on_pause_stream():
+    """Kills the current Twitter stream."""
+
+    print "Pausing Twitter stream."
+    # Kill Consumer
+    _kill_stream()
+
+
+@socketio.on('disconnect', namespace='/twitter')
+def on_disconnect():
+    """Kills the associated Twitter feed Consumer and Producer if no other clients exist."""
+
+    # TODO: There seem to be intermittent disconnect calls that do not actually
+    # result in the client disconnecting. For example, when the tracking page is open,
+    # this callback is called, on_connect [I believe] is NOT called, and the client
+    # still receives Tweets. This should not happen.
+    print "Entered a disconnect."
+    _kill_stream()
 
 
 if __name__ == '__main__':
-
-
-	# Run the web service
-	socketio.run(app)
+    # Run the web service
+    socketio.run(app)

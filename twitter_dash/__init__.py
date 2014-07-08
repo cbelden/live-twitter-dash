@@ -1,2 +1,2 @@
 from consume import Consumer
-from produce import TwitterFeedProducer
+from produce import TwitterFeedProducer, DebugTwitterFeedProducer
