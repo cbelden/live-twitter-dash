@@ -75,7 +75,8 @@ $(document).ready(function() {
     // Define the addFilter method; adds a filter to the filters div.
     var addFilter = function() {
         var filters = $(".filters");
-        var newFilter = document.getElementsByClassName("filter-input")[0].value;
+        var textArea = document.getElementsByClassName("filter-input")[0];
+        var newFilter = textArea.value;
 
         if (newFilter) {
 
@@ -105,7 +106,11 @@ $(document).ready(function() {
                 if (filterLength > 4) {
                     $(".filter:last-child").remove();
                 }
+
                 filters.prepend(newFilter);
+
+                // Delete current textarea text
+                textArea.value = '';
             }
 
             else {
@@ -169,5 +174,20 @@ $(document).ready(function() {
         $(".twitter-data").each(function() {
             $(this).slideUp();
         });
+    });
+
+    // Handle enter event when menu is open
+    $(document).keypress(function (e) {
+
+        // If the key is "ENTER"
+        if (e.which == 13) {
+
+            // Prevent enter button from being pressed.
+            e.preventDefault();
+            
+            if ($(".options-menu").css('display') !== 'none') {
+                addFilterButton.click();
+            }
+        }
     });
 });

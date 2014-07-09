@@ -1,17 +1,18 @@
 html, body {
     height: 100%;
     margin: 0;
-    font-family: Open Sans;
+    font-family: 'Oxygen', sans-serif;
     background-color: rgb(226, 226, 255);
 }
 
 h1 {
     margin-top: 0;
-    width: auto;
+    font-weight: 100;
 }
 
 h2 {
-    margin: 0;
+    margin: 10px;
+    font-weight: 100;
 }
 
 hr {
@@ -63,7 +64,7 @@ hr {
     z-index: 9999;
     text-align: center;
     border: 2px solid white;
-    border-radius: 10px;
+    border-radius: 3px;
 }
 
 .menu-button {
@@ -71,6 +72,15 @@ hr {
     top: 10px;
     left: 95%;
     text-align: center;
+}
+
+textarea {
+    font-family: "Oxygen", sans-serif;
+    color: rgb(119, 0, 185);
+    width: 110px;
+    height: 17px;
+    font-size: medium;
+    resize: none;
 }
 
 .menu-row > .button, textarea {
@@ -146,7 +156,7 @@ hr {
     height: 20px;
     border: none;
     background-color: rgb(93, 128, 240);
-    border-radius: 50%;
+    margin: 2px 2px;
 }
 
 .close-menu:hover {
@@ -176,7 +186,6 @@ hr {
 }
 
 .twitter-data {
-    border: 2px solid rgb(99, 177, 248);
     border-radius: 8px;
     color: rgb(0, 133, 255);
     padding-left: 2%;
@@ -196,7 +205,6 @@ hr {
     float: left;
     margin-top: 15px;
     margin-right: 5%;
-    border: 1px solid;
     border-radius: 2px;
     height: 48px;
     width: 48px;
