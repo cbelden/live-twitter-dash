@@ -34,11 +34,14 @@ class CustomStreamListener(tweepy.StreamListener):
         user = status.user
         screen_name = user.screen_name
         img_url = user.profile_image_url
+        str_id = status.id_str
+        tweet_url = '/'.join(["https://twitter.com", screen_name, "status", str_id])
 
         # Publish the data
         data = {'text': text,
                 'user_image_url': img_url,
-                'screen_name': screen_name}
+                'screen_name': screen_name,
+                'tweet_url': tweet_url}
         self._redis.publish(self._channel, json.dumps(data))
 
         # Throttle our results
@@ -77,8 +80,17 @@ class StreamProducer(gevent.Greenlet):
         # Listen to the stream of tweets containing the words/hashtags in 'filtering'
         stream = tweepy.Stream(oauth, self._stream_listener)
 
-        print "Starting filter on: ", self.tracking
-        stream.filter(track=self.tracking)
+        try:
+            stream.filter(track=self.tracking)
+        except Exception, e:
+            print e
+            # Emit error message to user
+            r = redis.Redis()
+            msg = {"text": "Sorry! Encountered an error while streaming tweets. Please start a new Stream.",
+                   "user_image_url": "static/img/error.png",
+                   "screen_name": "TwitterDash",
+                   "tweet_url": ""}
+            r.publish(self.channel, json.dumps(msg))
 
     def add_client(self, user):
         """Increments the number of clients."""
@@ -90,7 +102,8 @@ class StreamProducer(gevent.Greenlet):
 
         if len(self.clients) < 1:
             print "Producer client size is now 0. Killing: channel-", self.channel
-            self.kill()
+            super(StreamProducer, self).kill()
+
 
 class DebugStreamProducer(StreamProducer):
 
