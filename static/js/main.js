@@ -7,12 +7,12 @@ $(document).ready(function() {
 	// Get handles for twitter widget container
 	var twitter_container = $('.tweets');
 
-    // Define on connect data
+    // Define on connect handler
     socket.on('connect', function() {
         console.log("Client connected to server via socketio.");
     });
 
-    // Define on connect data
+    // Define on disconnect handler
     socket.on('disconnect', function() {
         console.log("Socketio client disconnected to server.");
     });
@@ -23,14 +23,17 @@ $(document).ready(function() {
 		// Get Tweet information
 		var screenName = '<strong>' + msg.data.screen_name + '</strong>: ';
 		var text = screenName + msg.data.text;
-		var url = msg.data.user_image_url;
+		var img_url = msg.data.user_image_url;
+        var tweet_url = msg.data.tweet_url;
 
 		console.log("[socket.io] Received new twitter data.");
 
-		// Construct html
-		var img = '<div class="profile-image"><img src="' + url + '"></div>';
+		// Construct tweet element
+		var img = '<img src="' + img_url + '">';
+        var tweetLink = '<a href="' + tweet_url + '" target="blank">' + img + '</a>';
+        var profImage = '<div class="profile-image">' + tweetLink + '</div>';
 		var tweet = '<div class="tweet-text">' + text + '</div>';
-		var tweetData = $('<div class="twitter-data">' + img + tweet + '</div>');
+		var tweetData = $('<div class="twitter-data">' + profImage + tweet + '</div>');
 
 		// Append tweet to twitter widget
 		tweetData.css('display', 'none');
