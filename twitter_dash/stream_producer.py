@@ -60,9 +60,6 @@ class StreamProducer(gevent.Greenlet):
         self.tracking = tracking
         print "Creating a Producer: channel-", self.channel
 
-        # Initialize the client list
-        self.clients = []
-
         # Call gevent.Greenlet constructor
         super(StreamProducer, self).__init__()
 
@@ -91,18 +88,6 @@ class StreamProducer(gevent.Greenlet):
                    "screen_name": "TwitterDash",
                    "tweet_url": ""}
             r.publish(self.channel, json.dumps(msg))
-
-    def add_client(self, user):
-        """Increments the number of clients."""
-        self.clients.append(user)
-
-    def remove_client(self, user):
-        """Decrements the number of clients. Kills self if the count is below 1."""
-        self.clients.remove(user)
-
-        if len(self.clients) < 1:
-            print "Producer client size is now 0. Killing: channel-", self.channel
-            super(StreamProducer, self).kill()
 
 
 class DebugStreamProducer(StreamProducer):
