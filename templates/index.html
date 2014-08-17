@@ -6,47 +6,20 @@
     <link rel="shortcut icon" href="static/img/twitter.png">
     <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
     <link href='http://fonts.googleapis.com/css?family=Oxygen:400,300&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-    <script type="text/javascript" src="http://code.jquery.com/jquery-latest.min.js"></script>
-    <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
-    <script type="text/javascript" src="{{url_for('static', filename='js/main.js')}}"></script>
+    <script type="text/javascript" data-main="static/js/main" src="static/js/libs/require/require-min.js"></script>
 </head>
 <body>
 
     <div class="grey-out"></div>
 
-	<div class='main-title title-bar'>
-        <img src="static/img/twitter.png" alt="">
-        <h1>Twitter Dash</h1>
-    </div>
-
-    <div class="menu-button">
-        <img src="static/img/settings-icon.png" alt="settings">
-    </div>
+	<div class='navbar title-bar'></div>
 
     <div class='container' id='twitter'>
-        <div class='title-bar'><h2>Stream- Filtering on</h2></div>
-        <div class='tweets'></div>
+        <div class='title-bar'><h2>Stream</h2></div>
+        <div id='tweets' class='tweets'></div>
     </div>
 
-    <div class="options-menu">
-        <div class="close-menu button"><img src="static/img/close-icon.png"></div>
-        
-        <h2>Filter Options</h2>
-
-        <div class="menu-row">
-            <textarea class="filter-input" cols="15" rows="1"></textarea>
-            <div class="add-filter button">Add Term</div>
-        </div>
-
-        <div class="filters"></div>
-
-        <div class="menu-row">
-            <div class="start-stream button"><img src="static/img/play.png" alt="Play"></div>
-            <div class="pause-stream button"><img src="static/img/pause.png" alt="Pause"></div>
-        </div>
-
-        <div class="clear-stream button">Clear Stream</div>
-    </div>
+    <div class="menu-container" id="menu"></div>
     
 </body>
 </html>
