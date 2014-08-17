@@ -49,7 +49,7 @@ hr {
     z-index: 2;
 }
 
-.main-title {
+.navbar {
     height: 50px;
     color: white;
     position: fixed;
@@ -57,7 +57,7 @@ hr {
     border-radius: 0;
 }
 
-.main-title > img {
+.navbar > img {
     float: left;
     margin-right: 20px;
 }
@@ -76,8 +76,8 @@ hr {
     text-align: center;
 }
 
-/************ Settings styling ************/
-.options-menu {
+/************ Menu styling ************/
+.menu {
     position: fixed;
     width: 30%;
     height: 400px;
@@ -136,12 +136,12 @@ textarea {
     border-radius: 4px;
 }
 
-.clear-stream {
+.clear {
     margin-left: 20%;
     width: 60%;
 }
 
-.filter-input, .start-stream {
+.filter-input, .start {
     margin-right: 5%;
 }
 
@@ -255,3 +255,17 @@ textarea {
 .tweet-text > strong {
     color: rgb(133, 0, 255);
 }
+
+/* Slide down animation */
+.hidden, .visible {
+    max-height: 0;            
+    overflow-y: hidden;
+    -webkit-transition: max-height .75s ease-in-out;
+    -moz-transition: max-height .75s ease-in-out;
+    -o-transition: max-height .75s ease-in-out;
+    transition: max-height .75s ease-in-out;
+}
+
+.visible {            
+    max-height: 80px ;                    
+} 
