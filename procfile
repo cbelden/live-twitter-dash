@@ -1,0 +1,1 @@
+web: gunicorn twitter_stream_app:app --worker-class socketio.sgunicorn.GeventSocketIOWorker --log-file=-

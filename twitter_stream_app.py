@@ -6,7 +6,7 @@ from twitter_stream import StreamManager, StreamRequest
 # Setup the app
 app = Flask(__name__)
 app.config['DEBUG'] = True
-app.config['SECRET_KEY'] = 'some bologna secret key' # Secret key used for the session module (can identify unique users; built on top of cookies)
+app.config['SECRET_KEY'] = 'some bologna secret key' # Secret key used for flask sessions. Use actual key in production.
 socketio =  SocketIO(app)
 MAX_INSTANCES_PER_USER = 3
 
