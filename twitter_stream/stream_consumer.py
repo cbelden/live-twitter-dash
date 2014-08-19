@@ -1,5 +1,5 @@
 import gevent
-import redis
+import redis_store as redis
 import json
 
 
