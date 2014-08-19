@@ -11,8 +11,8 @@ class CustomStreamListener(tweepy.StreamListener):
 
     def __init__(self, tracking):
         """Gets redis instance."""
-
-        self._redis = redis.Redis()
+        redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+        self._redis = redis.from_url(redis_url)
         self._tracking = tracking
         self._channel = json.dumps(sorted(tracking))
 

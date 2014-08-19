@@ -12,7 +12,8 @@ class StreamConsumer(gevent.Greenlet):
         print "Creating a Consumer: channel-", channel
 
         # Subscribe to the specified channel
-        r = redis.Redis()
+        redis_url = os.getenv('REDISTOGO_URL', 'redis://localhost:6379')
+        self._redis = redis.from_url(redis_url)
         self._pubsub = r.pubsub()
         self._pubsub.subscribe(channel)
 
