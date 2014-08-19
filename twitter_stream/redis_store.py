@@ -6,4 +6,4 @@ def Redis():
     return redis.from_url(_redis_url)
 
 def pubsub():
-    return redis.pubsub();
+    return Redis().pubsub();
