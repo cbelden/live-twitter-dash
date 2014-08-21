@@ -105,13 +105,13 @@ background-image: -ms-linear-gradient(bottom, #8400FF 0%, #5C3EF0 100%);
 background-image: linear-gradient(to bottom, #8400FF 0%, #5C3EF0 100%);
 }
 
-textarea {
+textarea.filter-input {
     font-family: "Oxygen", sans-serif;
     color: rgb(164, 0, 255);
     width: 110px;
-    height: 17px;
     font-size: medium;
     resize: none;
+    overflow: hidden;
 }
 
 .menu-row > .button, textarea {
@@ -155,7 +155,7 @@ textarea {
     background-color: white;
     margin-left: 5%;
     margin-top: 20px;
-    overflow: scroll;
+    overflow: hidden;
 }
 
 .filter {
@@ -197,7 +197,7 @@ textarea {
     background-color: transparent;
 }
 
-/******* Twitter-specific styling *********/
+/******* Twitter stream styling *********/
 
 .container {
     position: fixed;
@@ -211,9 +211,18 @@ textarea {
 }
 
 .tweets {
+    width: calc(100% + 20px); /* hide scroll bar */
+    height: 100%;
+    overflow: scroll;
+    background-color: white;
+    border-radius: 0 0 4px 4px;
+}
+
+/* Sole purpose is to hide the scroll bar*/
+.scroll-shield {
     width: 100%;
     height: 90%;
-    overflow: scroll;
+    overflow: hidden;
     background-color: white;
     border-radius: 0 0 4px 4px;
 }
@@ -226,7 +235,6 @@ textarea {
     overflow: hidden;
     width: 90%;
     height: 80px;
-    overflow: scroll;
     margin-left: auto;
     margin-right: auto;
     margin-bottom: 5px;
@@ -258,14 +266,15 @@ textarea {
 
 /* Slide down animation */
 .hidden, .visible {
-    max-height: 0;            
+    max-height: 0;
+    margin-top: -5px;   /* Removed jerk when new tweets are prepended to the stream */
     overflow-y: hidden;
-    -webkit-transition: max-height .75s ease-in-out;
-    -moz-transition: max-height .75s ease-in-out;
-    -o-transition: max-height .75s ease-in-out;
-    transition: max-height .75s ease-in-out;
+    -webkit-transition: max-height 1s ease-in-out;
+    -moz-transition: max-height 1s ease-in-out;
+    -o-transition: max-height 1s ease-in-out;
+    transition: max-height 1s ease-in-out;
 }
 
-.visible {            
+.visible {        
     max-height: 80px ;                    
 } 
