@@ -79,7 +79,7 @@ hr {
 /************ Menu styling ************/
 .menu {
     position: fixed;
-    width: 30%;
+    width: 37px;
     height: 400px;
     left: 35%;
     top: 100px;
@@ -213,7 +213,8 @@ textarea.filter-input {
 .tweets {
     width: calc(100% + 20px); /* hide scroll bar */
     height: 100%;
-    overflow: scroll;
+    overflow-y: scroll;
+    overflow-x: hidden;
     background-color: white;
     border-radius: 0 0 4px 4px;
 }
