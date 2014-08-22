@@ -85,7 +85,7 @@ define([
 
             if (this.validateNewTerm(newTerm)) {
                 // TODO starting to think the filters should be a subview.... going to hardcode this shit for now
-                newFilter = '<div class="filter">' + newTerm + '<div class="delete-filter button"><img src="static/img/close-icon.png"></div>' + '</div>';
+                newFilter = '<div class="filter">' + newTerm + '<div class="delete-filter button"><img src="static/img/close-icon.png"></div></div>';
 
                 // Limit filter terms to 5
                 var filterLength = $(".filter").length;
