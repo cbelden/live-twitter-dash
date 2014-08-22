@@ -1,3 +1,5 @@
+"""Wrapper class to access the appropriate redis instance depending on the environment."""
+
 import redis
 import os
 
