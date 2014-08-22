@@ -107,7 +107,7 @@ define([
         onDeleteTerm: function(ev) {
             console.log(ev.target);
             // Check if ending element is the nested img
-            if (event.target.tagName.toLowerCase() === 'img') {
+            if (ev.target.tagName.toLowerCase() === 'img') {
                 $(ev.target).parent().parent().remove();
             }
             else {
