@@ -3,7 +3,7 @@ from stream_producer import StreamProducer
 import json
 
 
-class StreamManager():
+class StreamServer():
     """Manages the stream producers/clients."""
 
     def __init__(self):
