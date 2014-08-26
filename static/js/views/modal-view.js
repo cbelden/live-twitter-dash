@@ -1,27 +1,19 @@
 define([
+
     'jquery',
     'underscore',
     'backbone',
     'socket/socket',
+    'views/filter-list-view',
     'text!templates/menu.html',
-], function($, _, Backbone, socket, MenuTemplate) {
-    var ModalView = Backbone.View.extend({
+
+], function($, _, Backbone, socket, FilterListView, MenuTemplate) {
+    return Backbone.View.extend({
+
         el: '#menu',
 
         tweets: function() {
             return $('.tweets');
-        },
-
-        newFilter: function() {
-            return $('.filter-input');
-        },
-
-        filters: function() {
-            return $('.filter');
-        },
-
-        filterContainer: function() {
-            return $('.filters');
         },
 
         tweetTitle: function() {
@@ -32,9 +24,22 @@ define([
             return $('.grey-out');
         },
 
+        newFilter: function() {
+            return $('.filter-input');
+        },
+
         initialize: function() {
-            //TODO: need to render the menu template and any other child templates
+            // Subviews
+            this.filterListView = new FilterListView();
+            this.render();
+        },
+
+        render: function() {
+            // Render this view
             this.$el.html(_.template(MenuTemplate));
+
+            // Render subview
+            this.filterListView.setElement(this.$('#filters'));
         },
 
         events: {
@@ -42,19 +47,12 @@ define([
             'click .pause': 'onPauseStream',
             'click .toggle-menu': 'onToggleMenu',
             'keyup .filter-input': 'onEnterAddTerm',
-            'click .add-term': 'onAddTerm',
-            'click .delete-filter': 'onDeleteTerm',
+            'click .add-filter': 'onAddFilter',
             'click .clear': 'onClearStream',
         },
 
         onPlayStream: function() {
-            var terms = function() {  // Not sure if this is good style.. could extract this to an object method and call this.getFilterTerms()
-                var terms = [];
-                $(".filter").each(function() {
-                    terms.push($(this).text());
-                });
-                return terms;
-            }();
+            var terms = this.filterListView.collection.pluck('term');
 
             socket.emit('start-stream', {tracking: terms});
             this.onToggleMenu();
@@ -74,45 +72,18 @@ define([
 
         onEnterAddTerm: function(ev) {
             if (ev.keyCode == 13) {
-                this.onAddTerm();
+                this.onAddFilter();
             }
         },
 
-        onAddTerm: function() {
+        onAddFilter: function() {
+            //  Add the new filter term to the collection
             var newTermTextarea = this.newFilter();
-            var newTerm = this.newFilter().val().trim();
+            var newTerm = {term: this.newFilter().val().trim()};
+            this.filterListView.collection.add(newTerm);
+
+            // Empty the input textarea
             this.newFilter().val('');
-
-            if (this.validateNewTerm(newTerm)) {
-                // TODO starting to think the filters should be a subview.... going to hardcode this shit for now
-                newFilter = '<div class="filter">' + newTerm + '<div class="delete-filter button"><img src="static/img/close-icon.png"></div></div>';
-
-                // Limit filter terms to 5
-                var filterLength = $(".filter").length;
-
-                if (filterLength > 4) {
-                    $(".filter:last-child").remove();
-                }
-
-                this.filterContainer().prepend(newFilter);
-
-                // Delete current textarea text
-                newTermTextarea.value = '';
-            }
-            else {
-                alert("Hey MOFO! New filter terms must not be empty, unique, and only contain letters and numbers.");
-            }
-        },
-
-        onDeleteTerm: function(ev) {
-            console.log(ev.target);
-            // Check if ending element is the nested img
-            if (ev.target.tagName.toLowerCase() === 'img') {
-                $(ev.target).parent().parent().remove();
-            }
-            else {
-                $(ev.target).parent().remove();
-            }
         },
 
         onClearStream: function() {
@@ -121,37 +92,13 @@ define([
 
         displayTerms: function() {
             var termsText = '';
+            var terms = this.filterListView.collection.pluck('term');
 
-            this.filters().each( function() {
-                termsText += $(this).text() + ', ';
+            _.each(terms, function(term) {
+                termsText += term + ', ';
             });
 
             this.tweetTitle().text('Stream Filtering on: [' + termsText.slice(0, -2) + ']');
         },
-
-        validateNewTerm: function(newTerm) {
-            var isValid = true;
-
-            if (!newTerm) {
-                isValid = false;
-            }
-
-            // Eliminate all non-letter and non-number characters
-            if (newTerm.replace(/\W+/g, "") !== newTerm) {
-                isValid = false;
-            }
-
-            // Check that filter has not already been added
-            this.filters().each(function() {
-                var prevTerm = $(this).text();
-                if (prevTerm == newTerm) {
-                    isValid = false;
-                }
-            });
-
-            return isValid;
-        },
     });
-
-    return ModalView;
 });
