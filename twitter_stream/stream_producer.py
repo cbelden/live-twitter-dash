@@ -4,6 +4,7 @@ import redis_store as redis
 import json
 import time
 import gevent
+import logging
 
 
 class CustomStreamListener(tweepy.StreamListener):
@@ -45,6 +46,7 @@ class CustomStreamListener(tweepy.StreamListener):
                 'created_at': created_at}
 
         # Publish the data
+        logging.debug('Publishing tweet to channel: ' + self._channel)
         self._redis.publish(self._channel, json.dumps(data))
 
         # Throttle our results
@@ -61,7 +63,7 @@ class StreamProducer(gevent.Greenlet):
         # The name of the channel will be the alpha-sorted tracking terms as a list.
         self.channel = json.dumps(sorted(tracking))
         self.tracking = tracking
-        print "Creating a Producer: channel-", self.channel
+        logging.debug('Creating a Producer. Channel: ' + self.channel)
 
         # Call gevent.Greenlet constructor
         super(StreamProducer, self).__init__()
@@ -82,8 +84,8 @@ class StreamProducer(gevent.Greenlet):
 
         try:
             stream.filter(track=self.tracking)
-        except Exception, e:
-            print e
+        except Exception:
+            logging.exception('Error with tweepy.')
             # Emit error message to user
             r = redis.Redis()
             msg = {"text": "Sorry! Encountered an error while streaming tweets. Please start a new Stream.",
@@ -93,20 +95,16 @@ class StreamProducer(gevent.Greenlet):
             r.publish(self.channel, json.dumps(msg))
 
     def kill(self):
-        """Prints the producer's information before dying."""
-
-        print "Killing a Producer: channel - " + self.channel
+        """Logs the producer's information before killing the greenlet."""
+        logging.debug('Killing Producer. Channel: ' + self._channel)
         super(StreamProducer, self).kill()
 
 
 class DebugStreamProducer(StreamProducer):
-
+    """Publishes tweets forever."""
     def _run(self):
-
-        # Get redis instance
+        """Publish tweets forever."""
         r = redis.Redis()
-
-        # Publish data forever
         while True:
             time.sleep(2)
             r.publish(self.channel, json.dumps({'text': 'This is a tweet.', 'user_image_url': '/static/img/raspberry-pi.png'}))

@@ -1,6 +1,11 @@
 from flask import Flask, render_template
 from flask.ext.socketio import SocketIO, request
 from twitter_stream import StreamServer, StreamRequest
+import logging
+
+
+# Setup logging
+logging.basicConfig(filename='', level=logging.DEBUG)
 
 
 # Setup the app
@@ -15,29 +20,22 @@ MAX_INSTANCES_PER_USER = 3
 stream_server = StreamServer()
 
 
-@app.before_request
-def setup():
-    """Adds a userid to the session object."""
-    pass
-
-
 @app.route('/')
 def index():
-    """Sets up the user's Twitter feed Producer."""
-
+    """Delivers client pay-load."""
     return render_template('index.html')
 
 
 @socketio.on('connect', namespace='/twitter')
 def on_connect():
     """Called when a client opens a socketio conneciton."""
-    print ">>>> connected to client"
+    logging.debug('New socketio connection: ' + request.namespace.socket.sessid)
 
 
 @socketio.on('start-stream', namespace='/twitter')
 def on_start_stream(msg):
     """Starts a twitter stream with the terms specifed in the client message."""
-
+    logging.debug('Received a "play" request: ' + request.namespace.socket.sessid)
     stream_request = StreamRequest(request, msg)
     stream_server.spawn_stream(stream_request)
 
@@ -45,7 +43,7 @@ def on_start_stream(msg):
 @socketio.on('pause-stream', namespace='/twitter')
 def on_pause_stream():
     """Kills the current Twitter stream."""
-
+    logging.debug('Received a "pause" request: ' + request.namespace.socket.sessid)
     stream_request = StreamRequest(request)
     stream_server.kill_connection(stream_request)
 
@@ -53,11 +51,11 @@ def on_pause_stream():
 @socketio.on('disconnect', namespace='/twitter')
 def on_disconnect():
     """Kills the associated Twitter feed Consumer and Producer if no other clients exist."""
-
+    logging.debug('Disconnected from the socketio connection: ' + request.namespace.socket.sessid)
     stream_request = StreamRequest(request)
     stream_server.kill_connection(stream_request)
 
 
 if __name__ == '__main__':
-    # Run the web service
+    # Run the web service (for debugging only)
     socketio.run(app)
