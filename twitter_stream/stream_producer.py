@@ -1,3 +1,4 @@
+from error import StreamErrorMessage
 import tweepy
 import os
 import redis_store as redis
@@ -7,18 +8,19 @@ import gevent
 import logging
 
 
-class CustomStreamListener(tweepy.StreamListener):
+class TwitterStreamListener(tweepy.StreamListener):
     """Listens to a twitter stream and publishes tweets to redis."""
 
     def __init__(self, tracking):
-        """Gets redis instance."""
+        """Initializes the stream producer."""
 
+        # Get redis instance
         self._redis = redis.Redis()
         self._tracking = tracking
         self._channel = json.dumps(sorted(tracking))
 
-        # Call StreamListener constructor
-        super(CustomStreamListener, self).__init__()
+        # Call tweepy.StreamListener constructor
+        super(TwitterStreamListener, self).__init__()
 
     def on_status(self, status):
         """Publishes the Tweet to redis."""
@@ -46,7 +48,7 @@ class CustomStreamListener(tweepy.StreamListener):
                 'created_at': created_at}
 
         # Publish the data
-        logging.debug('Publishing tweet to channel: ' + self._channel)
+        logging.info('Publishing tweet to channel: ' + self._channel)
         self._redis.publish(self._channel, json.dumps(data))
 
         # Throttle our results
@@ -55,17 +57,21 @@ class CustomStreamListener(tweepy.StreamListener):
 class StreamProducer(gevent.Greenlet):
     """Defines a Greenlet that publishes twitter data to redis."""
     
-    def __init__(self, tracking):
-        """Creates instance of CustomStreamListener."""
+    def __init__(self, tracking, _TwitterListener=None):
+        """Initializes the stream producer."""
 
-        self._stream_listener = CustomStreamListener(tracking)
+        # Set up the twitter listener
+        if not _TwitterListener:
+            _TwitterListener = TwitterStreamListener
 
-        # The name of the channel will be the alpha-sorted tracking terms as a list.
+        self._stream_listener = _TwitterListener(tracking)
+
+        # Set up the redis pubsub channel
         self.channel = json.dumps(sorted(tracking))
         self.tracking = tracking
-        logging.debug('Creating a Producer. Channel: ' + self.channel)
+        logging.info('Creating a Producer. Channel: ' + self.channel)
 
-        # Call gevent.Greenlet constructor
+        # Call parent constructor
         super(StreamProducer, self).__init__()
 
     def _run(self):
@@ -88,23 +94,29 @@ class StreamProducer(gevent.Greenlet):
             logging.exception('Error with tweepy.')
             # Emit error message to user
             r = redis.Redis()
-            msg = {"text": "Sorry! Encountered an error while streaming tweets. Please start a new Stream.",
-                   "user_image_url": "static/img/error.png",
-                   "screen_name": "TwitterDash",
-                   "tweet_url": ""}
-            r.publish(self.channel, json.dumps(msg))
+            r.publish(self.channel, json.dumps(StreamErrorMessage))
 
     def kill(self):
         """Logs the producer's information before killing the greenlet."""
-        logging.debug('Killing Producer. Channel: ' + self._channel)
+        logging.info('Killing Producer. Channel: ' + self.channel)
         super(StreamProducer, self).kill()
 
 
 class DebugStreamProducer(StreamProducer):
     """Publishes tweets forever."""
+
+    def __init__(self, tracking):
+        self.channel = json.dumps(sorted(tracking))
+        super(StreamProducer, self).__init__()
+
     def _run(self):
         """Publish tweets forever."""
         r = redis.Redis()
         while True:
             time.sleep(2)
-            r.publish(self.channel, json.dumps({'text': 'This is a tweet.', 'user_image_url': '/static/img/raspberry-pi.png'}))
+            data = {'text': 'This is a tweet',
+                    'image_url': '/static/img/raspberry-pi.png',
+                    'screen_name': 'somecooldude',
+                    'tweet_url': '#',
+                    'created_at': 'never'}
+            r.publish(self.channel, json.dumps(data))

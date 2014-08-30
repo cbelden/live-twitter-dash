@@ -6,12 +6,23 @@ import json
 class StreamServer():
     """Manages the stream producers/clients."""
 
-    def __init__(self):
+    def __init__(self, producer_class=None, consumer_class=None):
         """Initializes the StreamManager object."""
 
         self._producers = {}        # Pool of producers
         self._consumers = {}        # Each socketio session's consumer
         self._clients = {}          # Stores the sessid of each socketio client
+
+        # Set up the default producer class
+        if not producer_class:
+            producer_class = StreamProducer
+
+        # Set up the default consumer class
+        if not consumer_class:
+            consumer_class = StreamConsumer
+
+        self._ProducerClass = producer_class
+        self._ConsumerClass = consumer_class
 
 
     def spawn_stream(self, socketio_conn):
@@ -31,7 +42,7 @@ class StreamServer():
 
         # Create the stream consumer
         channel = json.dumps(sorted(tracking_terms))
-        stream_consumer = StreamConsumer(channel, emit)
+        stream_consumer = self._ConsumerClass(channel, emit)
 
         # Kill old consumer
         if sessid in self._consumers:
@@ -51,14 +62,14 @@ class StreamServer():
 
         # Create and start a new producer if it doesn't exist
         if terms not in self._producers:
-            feed_producer = StreamProducer(tracking_terms)
+            feed_producer = self._ProducerClass(tracking_terms)
             feed_producer.start()
             self._producers[terms] = feed_producer
 
-        # Add this sessid to the current client store
         if not terms in self._clients:
             self._clients[terms] = []
 
+        # Add this sessid to the current client store
         self._clients[terms].append(sessid)
 
     def kill_connection(self, socketio_conn):
@@ -69,15 +80,18 @@ class StreamServer():
         """
 
         sessid = socketio_conn.sessid
-        tracking_terms = self._get_tracking_terms(sessid)  
-        terms = frozenset(tracking_terms) if tracking_terms else None
+        tracking_terms = self._get_tracking_terms(sessid)
+
+        if not tracking_terms:
+            return
 
         # Get this connection's consumer/producer
+        terms = frozenset(tracking_terms)
         consumer = self._consumers.get(sessid, None)
         producer = self._producers.get(terms, None)
 
         # Remove the sessid from the clients dict
-        if terms:
+        if terms in self._clients:
             self._clients[terms].remove(sessid)
 
         # Kill/Delete the consumer
@@ -86,11 +100,9 @@ class StreamServer():
             del self._consumers[sessid]
 
         # Delete producer if there are no more clients
-        if producer:
-
-            if len(self._clients[terms]) < 1:
-                producer.kill()
-                del self._producers[terms]
+        if producer and len(self._clients[terms]) < 1:
+            producer.kill()
+            del self._producers[terms]
 
     def _get_tracking_terms(self, sessid):
         """
@@ -99,7 +111,6 @@ class StreamServer():
         """
 
         for terms, ids in self._clients.iteritems():
-
             if sessid in ids:
                 return terms
 

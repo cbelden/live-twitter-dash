@@ -23,7 +23,7 @@ class StreamConsumer(gevent.Greenlet):
 
         # Call Greenlet constructor
         super(StreamConsumer, self).__init__();
-        logging.debug("Creating a Consumer: Channel: " + self.channel)
+        logging.info("Creating a Consumer: Channel: " + self.channel)
 
     def _run(self):
         """Listens to the pubsub channel and emits data."""
@@ -32,9 +32,9 @@ class StreamConsumer(gevent.Greenlet):
             if not type(item['data']) is str:
                 continue
 
-            logging.debug("Consuming a tweet: Channel: " + self.channel)
+            logging.info("Consuming a tweet: Channel: " + self.channel)
             self._emit('twitter-data', {'data': json.loads(item['data'])})
 
     def kill(self):
-        logging.debug("Killing a Consumer. Channel: " + self.channel)
+        logging.info("Killing a Consumer. Channel: " + self.channel)
         super(StreamConsumer, self).kill()
