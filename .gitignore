@@ -2,3 +2,4 @@
 venv
 *.pyc
 node_modules
+stream.log
