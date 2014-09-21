@@ -11,7 +11,7 @@ class StreamServer():
 
         self._producers = {}        # Pool of producers
         self._consumers = {}        # Each socketio session's consumer
-        self._clients = {}          # Stores the sessid of each socketio client
+        self._terms = {}            # Stores the filtering terms of each client
 
         # Set up the default producer class
         if not producer_class:
@@ -54,7 +54,6 @@ class StreamServer():
 
     def spawn_producer(self, socketio_conn):
         """Spawns a new stream producer."""
-
         # Get connection info
         sessid = socketio_conn.sessid
         tracking_terms = socketio_conn.tracking_terms
@@ -66,11 +65,11 @@ class StreamServer():
             feed_producer.start()
             self._producers[terms] = feed_producer
 
-        if not terms in self._clients:
-            self._clients[terms] = []
+        # Add/Update record of this client
+        self._terms[sessid] = terms
 
-        # Add this sessid to the current client store
-        self._clients[terms].append(sessid)
+        # Kill any producers who may have lost its last client
+        self._clean_producers()
 
     def kill_connection(self, socketio_conn):
         """
@@ -79,40 +78,27 @@ class StreamServer():
         is its last client.
         """
 
+        # Remove the sessid record from the terms dict
         sessid = socketio_conn.sessid
-        tracking_terms = self._get_tracking_terms(sessid)
-
-        if not tracking_terms:
-            return
-
-        # Get this connection's consumer/producer
-        terms = frozenset(tracking_terms)
-        consumer = self._consumers.get(sessid, None)
-        producer = self._producers.get(terms, None)
-
-        # Remove the sessid from the clients dict
-        if terms in self._clients:
-            self._clients[terms].remove(sessid)
+        if sessid in self._terms:
+            del self._terms[sessid]
 
         # Kill/Delete the consumer
+        consumer = self._consumers.get(sessid, None)
         if consumer:
             consumer.kill()
             del self._consumers[sessid]
 
-        # Delete producer if there are no more clients
-        if producer and len(self._clients[terms]) < 1:
-            producer.kill()
-            del self._producers[terms]
+        # Kill producers that no longer have a client
+        self._clean_producers()
 
-    def _get_tracking_terms(self, sessid):
-        """
-        Queries the _clients dictionary for the terms that this socketio connection
-        is subscribed to.
-        """
+    def _clean_producers(self):
+        """Deletes any producers that have no clients."""
 
-        for terms, ids in self._clients.iteritems():
-            if sessid in ids:
-                return terms
+        for terms in self._producers.keys():
+            if terms not in self._terms.values():
+                self._producers[terms].kill()
+                del self._producers[terms]
 
 
 class StreamRequest():
