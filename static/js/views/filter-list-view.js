@@ -3,7 +3,7 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'collections/tweet-collection',
+    'collections/filter-collection',
     'text!templates/filter.html',
 
 ], function($, _, Backbone, FilterCollection, FilterTemplate) {
@@ -34,8 +34,9 @@ define([
         },
 
         onDeleteFilter: function(ev) {
-            ev.preventDefault();
             var parent = $(ev.target).parent();
+            ev.preventDefault();
+
             while (parent.attr('class') !== 'filter') {
                 parent = parent.parent();
             }

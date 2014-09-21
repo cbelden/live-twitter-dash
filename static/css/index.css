@@ -49,17 +49,23 @@ hr {
     z-index: 2;
 }
 
+/************** Navbar ***************/
+
 .navbar {
     height: 50px;
     color: white;
-    position: fixed;
     width: 100%;
     border-radius: 0;
 }
 
 .navbar > img {
-    float: left;
     margin-right: 20px;
+    margin-left: 20px;
+    float: left;
+}
+
+.navbar > h1 {
+    float: left;
 }
 
 .widget {
@@ -68,23 +74,38 @@ hr {
     background: white;
 }
 
-.menu-button {
+.nav-button {
     cursor: pointer;
-    position: fixed;
-    top: 10px;
-    left: 95%;
-    text-align: center;
+    float: right;
+}
+
+.toggle-menu {
+    margin-top: 10px;
+    margin-right: 16px;
+    margin-left: 20px;
+}
+
+.play-nav, .pause-nav > img {
+    margin-top: -4px;
+    margin-left: -10px;
 }
 
 /************ Menu styling ************/
-.menu {
-    position: fixed;
+.menu-modal {
     width: 370px;
     height: 400px;
-    left: 35%;
+
+    /* Position in the center of the screen */
+    position: fixed;
+    left: 0;
+    right: 0;
+    margin-left: auto;
+    margin-right: auto;
+
+    /* Position near top of the screen */
     top: 100px;
-    color: white;
     margin-top: 50px;
+    color: white;
     z-index: 9999;
     text-align: center;
     border: 2px solid white;
@@ -268,12 +289,12 @@ textarea.filter-input {
 /* Slide down animation */
 .hidden, .visible {
     max-height: 0;
-    margin-top: -5px;   /* Removed jerk when new tweets are prepended to the stream */
+    margin-top: -3px;   /* Removed jerk when new tweets are prepended to the stream */
     overflow-y: hidden;
-    -webkit-transition: max-height 1s ease-in-out;
-    -moz-transition: max-height 1s ease-in-out;
-    -o-transition: max-height 1s ease-in-out;
-    transition: max-height 1s ease-in-out;
+    -webkit-transition: max-height .75s ease-in-out;
+    -moz-transition: max-height .75s ease-in-out;
+    -o-transition: max-height .75s ease-in-out;
+    transition: max-height .75s ease-in-out;
 }
 
 .visible {        

@@ -1,14 +1,14 @@
 define([
     'backbone',
     'views/tweet-list-view',
-    'views/menu-view',
+    'views/navbar-view',
     'socket/socket',
-], function(Backbone, TweetListView, MenuView, socket) {
+], function(Backbone, TweetListView, NavView, socket) {
     
     var SocketRouter = {
         initialize: function() {
             var tweetListView = new TweetListView();
-            var menuView = new MenuView();
+            var navView = new NavView();
 
             /* Socket event handlers */
             socket.on('connect', function() {

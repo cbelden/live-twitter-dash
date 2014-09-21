@@ -5,10 +5,11 @@ define([
     'text!templates/navbar.html',
     'views/modal-view'
 ], function($, _, Backbone, NavbarTemplate, ModalView) {
-    var NavbarView = Backbone.View.extend({
-        el: $('.navbar'),
+    return Backbone.View.extend({
 
-        greyOut: function() {
+        el: '.navbar',
+
+        $greyOut: function() {
             return $('.grey-out');
         },
 
@@ -22,16 +23,27 @@ define([
 
         events: {
             'click .toggle-menu': 'onToggleMenu',
+            'click .play-nav': 'onPlayStream',
+            'click .pause-nav': 'onPauseStream',
         },
 
-        onToggleMenu: function() {
+        onToggleMenu: function(ev) {
+            ev.preventDefault();
             var isVisible = this.modalView.$el.css('display') !== 'none';
             var newDisplay = isVisible ? 'none' : 'inherit';
             this.modalView.$el.css('display', newDisplay);
-            this.greyOut().css('display', newDisplay);
-        }
+            this.$greyOut().css('display', newDisplay);
+        },
+
+        onPlayStream: function(ev) {
+            ev.preventDefault();
+            this.modalView.onPlayStream(ev, true);
+        },
+
+        onPauseStream: function(ev) {
+            ev.preventDefault();
+            this.modalView.onPauseStream(ev);
+        },
 
     });
-
-    return NavbarView;
 });

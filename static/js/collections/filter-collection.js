@@ -1,11 +1,9 @@
 define([
 
-    'underscore',
-    'jquery',
     'backbone',
     'models/filter-model',
 
-], function(_, $, Backbone, FilterModel) {
+], function(Backbone, FilterModel) {
 
     return Backbone.Collection.extend({
         model: FilterModel,
