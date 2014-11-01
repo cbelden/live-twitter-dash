@@ -19,7 +19,7 @@ background-image: linear-gradient(to bottom, #8400FF 0%, #5C3EF0 100%);
 }
 
 h1 {
-    margin-top: 0;
+    margin-top: -10px;
     font-weight: 100;
 }
 
@@ -58,42 +58,37 @@ hr {
     border-radius: 0;
 }
 
-.navbar > img {
+.logo {
+    display: inline-block;
     margin-right: 20px;
     margin-left: 20px;
-    float: left;
 }
 
-.navbar > h1 {
-    float: left;
-}
-
-.widget {
-    width: 100%;
-    border-radius: 4px;
-    background: white;
+.title {
+    display: inline-block;
 }
 
 .nav-button {
-    cursor: pointer;
+    width: 55px;
+    text-align: center;
+    font-size: 36px;
     float: right;
 }
 
 .toggle-menu {
-    margin-top: 10px;
     margin-right: 16px;
-    margin-left: 20px;
 }
 
-.play-nav, .pause-nav > img {
+.play-nav > img, .pause-nav > img {
     margin-top: -4px;
     margin-left: -10px;
+    cursor: pointer;
+    float: left;
 }
 
-/************ Menu styling ************/
+/************ Menu-modal styling ************/
 .menu-modal {
     width: 370px;
-    height: 400px;
 
     /* Position in the center of the screen */
     position: fixed;
@@ -117,13 +112,12 @@ hr {
     right top,
     right bottom,
     color-stop(0, #8400FF),
-    color-stop(1, #5C3EF0)
-);
-background-image: -o-linear-gradient(bottom, #8400FF 0%, #5C3EF0 100%);
-background-image: -moz-linear-gradient(bottom, #8400FF 0%, #5C3EF0 100%);
-background-image: -webkit-linear-gradient(bottom, #8400FF 0%, #5C3EF0 100%);
-background-image: -ms-linear-gradient(bottom, #8400FF 0%, #5C3EF0 100%);
-background-image: linear-gradient(to bottom, #8400FF 0%, #5C3EF0 100%);
+    color-stop(1, #5C3EF0));
+    background-image: -o-linear-gradient(bottom, #8400FF 0%, #5C3EF0 100%);
+    background-image: -moz-linear-gradient(bottom, #8400FF 0%, #5C3EF0 100%);
+    background-image: -webkit-linear-gradient(bottom, #8400FF 0%, #5C3EF0 100%);
+    background-image: -ms-linear-gradient(bottom, #8400FF 0%, #5C3EF0 100%);
+    background-image: linear-gradient(to bottom, #8400FF 0%, #5C3EF0 100%);
 }
 
 textarea.filter-input {

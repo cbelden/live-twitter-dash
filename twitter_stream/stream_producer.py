@@ -1,11 +1,16 @@
-from error import StreamErrorMessage
 import tweepy
-import os
 import redis_store as redis
 import json
 import time
 import gevent
 import logging
+from tweepy_oauth import oauth
+
+
+StreamErrorMessage = {"text": "Sorry! Encountered an error while streaming tweets. Please start a new Stream.",
+                      "user_image_url": "static/img/error.png",
+                      "screen_name": "TwitterDash",
+                      "tweet_url": "#"}
 
 
 class TwitterStreamListener(tweepy.StreamListener):
@@ -76,14 +81,6 @@ class StreamProducer(gevent.Greenlet):
 
     def _run(self):
         """Starts the twitter stream listener/redis-publisher."""
-
-        # Authorize tweepy
-        consumer_key = os.environ['TWITTER_CONSUMER_KEY']
-        consumer_secret = os.environ['TWITTER_CONSUMER_SECRET']
-        access_token = os.environ['TWITTER_ACCESS_TOKEN']
-        access_token_secret = os.environ['TWITTER_ACCESS_TOKEN_SECRET']
-        oauth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        oauth.set_access_token(access_token, access_token_secret)
 
         # Listen to the stream of tweets containing the words/hashtags in 'filtering'
         stream = tweepy.Stream(oauth, self._stream_listener)

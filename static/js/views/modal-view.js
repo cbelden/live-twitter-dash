@@ -5,9 +5,10 @@ define([
     'backbone',
     'socket/socket',
     'views/filter-list-view',
+    'views/trending-list-view',
     'text!templates/menu.html',
 
-], function($, _, Backbone, socket, FilterListView, MenuTemplate) {
+], function($, _, Backbone, socket, FilterListView, TrendingListView, MenuTemplate) {
     return Backbone.View.extend({
 
         el: '#menu',
@@ -29,8 +30,11 @@ define([
         },
 
         initialize: function() {
-            // Subviews
+            // Create subviews
             this.filterListView = new FilterListView();
+            this.trendingListView = new TrendingListView();
+
+            // Render
             this.render();
         },
 
@@ -38,8 +42,12 @@ define([
             // Render this view
             this.$el.html(_.template(MenuTemplate));
 
-            // Render subview
+            // Render subview(s)
             this.filterListView.setElement(this.$('#filters'));
+            this.filterListView.render();
+
+            this.trendingListView.setElement(this.$('#trending-terms'));
+            this.trendingListView.render();
         },
 
         events: {

@@ -3,10 +3,9 @@ define([
     'jquery',
     'underscore',
     'backbone',
-    'collections/tweet-collection',
     'text!templates/tweet.html',
 
-], function($, _, Backbone, TweetCollection, TweetTemplate) {
+], function($, _, Backbone, TweetTemplate) {
 
     return Backbone.View.extend({
 
@@ -14,7 +13,7 @@ define([
 
         initialize: function() {
             // Create collection and add a handler to the add event
-            this.collection = new TweetCollection();
+            this.collection = new Backbone.Collection();
             this.collection.bind('add', this.onTweetAdded, this);
         },
 

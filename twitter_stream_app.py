@@ -1,6 +1,6 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, jsonify
 from flask.ext.socketio import SocketIO, request
-from twitter_stream import StreamServer, StreamRequest, DebugStreamProducer
+from twitter_stream import StreamServer, StreamRequest, trending_terms
 import logging
 
 
@@ -13,7 +13,6 @@ app = Flask(__name__)
 app.config['DEBUG'] = True
 app.config['SECRET_KEY'] = 'some bologna secret key' # Secret key used for flask sessions. Use actual key in production.
 socketio =  SocketIO(app)
-MAX_INSTANCES_PER_USER = 3
 
 
 # Global stream manager to handle the socketio requests
@@ -24,6 +23,11 @@ stream_server = StreamServer()
 def index():
     """Delivers client pay-load."""
     return render_template('index.html')
+
+@app.route('/trending-terms')
+def trending():
+    """Returns a list of the trending terms on Twitter in the US."""
+    return jsonify(results=[{'term': t} for t in trending_terms()])
 
 
 @socketio.on('connect', namespace='/twitter')

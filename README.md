@@ -3,9 +3,14 @@ twitter-dash: a real time Twitter display
 
 About
 -----
-twitter-dash is a live updating Twitter stream that allows users to customize
-their own stream using keywords. All Tweets that appear will contain all of the
-keywords specified.
+twitter-dash is real-time Twitter feed that allows users to customize
+their stream by specifying keywords.
+
+Tech
+-----
+* Client-side frameworks - Backbone, socketio
+* Server-side framework - Flask
+* Twitter API - tweepy
 
 Notes
 -----
@@ -15,4 +20,4 @@ Notes
 
 URL
 ---
-TBD
+http://real-time-twitter-stream.herokuapp.com

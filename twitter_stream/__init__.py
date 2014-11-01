@@ -1,3 +1,2 @@
-from stream_consumer import StreamConsumer
-from stream_producer import StreamProducer, DebugStreamProducer
 from stream_server import StreamServer, StreamRequest
+from trending import trending_terms

@@ -26,11 +26,6 @@ define([
 
             var template = _.template(FilterTemplate, term);
             this.$el.prepend(template);
-
-            // Cap # of filters
-            if (this.collection.length > 5) {
-                // TODO delete the last filter. Limit input to 5 terms.
-            }
         },
 
         onDeleteFilter: function(ev) {
