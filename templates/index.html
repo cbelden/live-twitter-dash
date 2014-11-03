@@ -4,25 +4,86 @@
     <meta charset="UTF-8">
     <title>Twitter Stream</title>
     <link rel="shortcut icon" href="static/img/twitter.png">
-    <link rel="stylesheet" href="{{url_for('static', filename='css/index.css')}}">
+    <link rel="stylesheet" href="static/css/index.css">
     <link href='http://fonts.googleapis.com/css?family=Oxygen:400,300&subset=latin,latin-ext' rel='stylesheet' type='text/css'>
-    <script type="text/javascript" data-main="static/js/main" src="static/js/libs/require/require-min.js"></script>
 </head>
-<body>
+<body ng-app="TwitterStreamApp" ng-controller="ModalController">
+    <div class="grey-out"ng-show="isShown()"></div>
 
-    <div class="grey-out"></div>
+	<div class='navbar' ng-controller='NavbarController'>
+        <img src="../static/img/twitter.png" alt="">
 
-	<div class='navbar'></div>
+        <h1>Twitter Stream</h1>
 
-    <div class='container' id='twitter'>
+        <div class="toggle-menu nav-button" ng-click="toggleMenu()">
+            <img src="../static/img/settings-icon.png" alt="settings">
+        </div>
+
+        <div class="pause-nav nav-button" ng-click="pauseStream()">
+            <img src="../static/img/pause-small.png">
+        </div>
+
+        <div class="play-nav nav-button" ng-click="playStream()">
+            <img src="../static/img/play-small.png">
+        </div>   
+    </div>
+
+    <div class='container' id='twitter' ng-controller="TweetStreamController">
         <div class='title-bar'><h2>Stream</h2></div>
         
         <div class='scroll-shield'>
-            <div id='tweets' class='tweets'></div>
+            <div id='tweets' class='tweets'>
+                <div class="twitter-data animate-tweet" ng-repeat="tweet in model.tweets">
+                    <div class="profile-image">
+                        <a href="{{tweet.data.tweet_url}}" target="blank">
+                            <img ng-src="{{tweet.data.image_url}}">
+                        </a>
+                    </div>
+
+                    <div class="tweet-text">
+                        <strong>@{{tweet.data.screen_name}}</strong>
+                        &nbsp;
+                        {{tweet.data.text}}
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 
-    <div class="menu-container" id="menu"></div>
-    
+    <div class="menu-modal" ng-show="isShown()" ng-controller="MenuController">
+        <div class="toggle-menu close-menu button" ng-click="closeModal()">
+            <img src="static/img/close-icon.png" alt="">
+        </div>
+            
+        <h2>Stream Options</h2>
+
+        <div class="menu-row">
+            <textarea class="filter-input" cols="15" rows="1" ng-model="model.newTerm" ng-pattern="/^#?[a-zA-Z0-9]+$/"></textarea>
+            <div class="add-filter button" ng-click="addTerm(model.newTerm)">Add Term</div>
+        </div>
+
+        <div class="filters" id="filters">
+            <div class="filter" ng-repeat="term in model.terms track by $index">
+                {{term}}
+                <div class="delete-filter button" ng-click="deleteTerm($index)">
+                    <img src="static/img/close-icon.png">
+                </div>
+            </div>
+        </div>
+
+        <div class="menu-row">
+            <div class="start button" ng-click="playStream()"><img src="static/img/play.png" alt="Play"></div>
+            <div class="pause button" ng-click="pauseStream()"><img src="static/img/pause.png" alt="Pause"></div>
+        </div>
+
+        <div class="clear button" ng-click="clearStream()">Clear Stream</div>
+        <div id="trending-terms"></div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.js"></script>
+    <script src="https://code.angularjs.org/1.2.26/angular-animate.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script src="static/js/app.js"></script>
 </body>
 </html>

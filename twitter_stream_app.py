@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, send_from_directory
 from flask.ext.socketio import SocketIO, request
 from twitter_stream import StreamServer, StreamRequest, DebugStreamProducer
 import logging
@@ -23,7 +23,7 @@ stream_server = StreamServer()
 @app.route('/')
 def index():
     """Delivers client pay-load."""
-    return render_template('index.html')
+    return send_from_directory('templates', 'index.html')
 
 
 @socketio.on('connect', namespace='/twitter')
@@ -41,7 +41,7 @@ def on_start_stream(msg):
 
 
 @socketio.on('pause-stream', namespace='/twitter')
-def on_pause_stream():
+def on_pause_stream(msg):
     """Kills the current Twitter stream."""
     logging.info('Received a "pause" request: ' + request.namespace.socket.sessid)
     stream_request = StreamRequest(request)

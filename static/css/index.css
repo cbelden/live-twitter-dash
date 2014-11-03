@@ -40,10 +40,11 @@ hr {
 }
 
 .grey-out {
-    position: fixed;
+    position: absolute;
     background-color: rgb(28, 28, 32);
     opacity: 0.8;
-    top: 50px;
+    top: 0px;
+    left: 0px;
     height: 100%;
     width: 100%;
     z-index: 2;
@@ -287,16 +288,22 @@ textarea.filter-input {
 }
 
 /* Slide down animation */
-.hidden, .visible {
-    max-height: 0;
-    margin-top: -3px;   /* Removed jerk when new tweets are prepended to the stream */
-    overflow-y: hidden;
-    -webkit-transition: max-height .75s ease-in-out;
-    -moz-transition: max-height .75s ease-in-out;
-    -o-transition: max-height .75s ease-in-out;
-    transition: max-height .75s ease-in-out;
+.animate-tweet.ng-enter {
+ -webkit-transition: 1s linear all; /* Safari/Chrome */
+ -moz-transition: 1s linear all; /* Firefox */
+ -o-transition: 1s linear all; /* Opera */
+ transition: 1s linear all; /* IE10+ and Future Browsers */
+ 
+ /* The animation preparation code */
+ height: 0px;
 }
-
-.visible {        
-    max-height: 80px ;                    
-} 
+ 
+/*
+ Keep in mind that you want to combine both CSS
+ classes together to avoid any CSS-specificity
+ conflicts
+*/
+.animate-tweet.ng-enter.ng-enter-active {
+ /* The animation code itself */
+ height: 80px;
+}
