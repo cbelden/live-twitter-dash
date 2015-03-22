@@ -9,6 +9,7 @@ gevent-websocket==0.9.3
 greenlet==0.4.3
 gunicorn==0.16.1
 itsdangerous==0.24
+pymobiledetect==1.2.0
 redis==2.10.3
 tweepy==2.3.0
 wsgiref==0.1.2

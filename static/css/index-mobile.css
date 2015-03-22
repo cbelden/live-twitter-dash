@@ -1,0 +1,53 @@
+/* Mobile modifications */
+.menu-modal {
+    width: 60%;
+    height: 35%;
+    position: fixed;
+    font-size: 30px;
+}
+h1 {
+    font-size:40px;
+}
+.menu-modal .filters {
+    height: 30%;
+}
+.navbar {
+    height: 60px;
+}
+
+.menu-modal.mobile .filter {
+    font-size: 30px;
+}
+
+.menu-modal .filter-input {
+    width: 200px;
+    height: 40px;
+    font-size: 30px;
+}
+
+.menu-modal .menu-row {
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+
+.delete-filter {
+    height: 30px;
+}
+
+.menu-modal .thin-button {
+    height: 40px;
+}
+
+.tweet-text{
+    width: 80%;
+    font-size: medium;
+    margin-left: 10px;
+    -webkit-text-size-adjust: 100%;
+}
+
+.container {
+    top: 67px;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}

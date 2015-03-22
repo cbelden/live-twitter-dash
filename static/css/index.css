@@ -3,6 +3,9 @@ html, body {
     margin: 0;
     font-family: 'Oxygen', sans-serif;
 
+    /* Set size of 1 em to 10px */
+    font-size: 10px;
+
 /*CSS gradient background*/
 background-image: -webkit-gradient(
     linear,
@@ -24,7 +27,7 @@ h1 {
 }
 
 h2 {
-    margin: 10px;
+    margin: 1em;
     font-weight: 100;
 }
 
@@ -34,7 +37,7 @@ hr {
 
 .title-bar {
     padding-left: 2em;
-    height: 40px;
+    height: 4em;
     color: rgb(132, 0, 255);
     margin-left: auto;
 }
@@ -43,8 +46,8 @@ hr {
     position: absolute;
     background-color: rgb(28, 28, 32);
     opacity: 0.8;
-    top: 0px;
-    left: 0px;
+    top: 0;
+    left: 0;
     height: 100%;
     width: 100%;
     z-index: 2;
@@ -53,7 +56,7 @@ hr {
 /************** Navbar ***************/
 
 .navbar {
-    height: 50px;
+    height: 5em;
     color: white;
     width: 100%;
     border-radius: 0;
@@ -71,7 +74,7 @@ hr {
 
 .widget {
     width: 100%;
-    border-radius: 4px;
+    border-radius: 0.4px;
     background: white;
 }
 
@@ -81,20 +84,20 @@ hr {
 }
 
 .toggle-menu {
-    margin-top: 10px;
-    margin-right: 16px;
-    margin-left: 20px;
+    margin-top: 1em;
+    margin-right: 1.6em;
+    margin-left: 2em;
 }
 
 .play-nav, .pause-nav > img {
-    margin-top: -4px;
-    margin-left: -10px;
+    margin-top: -0.4em;
+    margin-left: -1em;
 }
 
 /************ Menu styling ************/
 .menu-modal {
-    width: 370px;
-    height: 400px;
+    width: 37em;
+    height: 40em;
 
     /* Position in the center of the screen */
     position: fixed;
@@ -104,13 +107,13 @@ hr {
     margin-right: auto;
 
     /* Position near top of the screen */
-    top: 100px;
-    margin-top: 50px;
+    top: 10em;
+    margin-top: 5em;
     color: white;
     z-index: 9999;
     text-align: center;
-    border: 2px solid white;
-    border-radius: 3px;
+    border: 0.2em solid white;
+    border-radius: 0.3em;
 
     /*CSS gradient background*/
     background-image: -webkit-gradient(
@@ -130,7 +133,7 @@ background-image: linear-gradient(to bottom, #8400FF 0%, #5C3EF0 100%);
 textarea.filter-input {
     font-family: "Oxygen", sans-serif;
     color: rgb(164, 0, 255);
-    width: 110px;
+    width: 11em;
     font-size: medium;
     resize: none;
     overflow: hidden;
@@ -144,18 +147,18 @@ textarea.filter-input {
     width: 90%;
     height: auto;
     margin-left: 10%;
-    margin-top: 20px;
-    margin-bottom: 20px;
+    margin-top: 2em;
+    margin-bottom: 2em;
     overflow: auto;
 }
 
 .button {
     cursor: pointer;
     background-color: rgb(140, 86, 255);
-    border: 2px solid white;
+    border: 0.2em solid white;
     width: 40%;
     text-align: center;
-    border-radius: 4px;
+    border-radius: 0.4em;
 }
 
 .clear {
@@ -172,11 +175,11 @@ textarea.filter-input {
 }
 
 .filters {
-    height: 100px;
+    height: 10em;
     width: 90%;
     background-color: white;
     margin-left: 5%;
-    margin-top: 20px;
+    margin-top: 2em;
     overflow: hidden;
 }
 
@@ -186,8 +189,8 @@ textarea.filter-input {
     color: white;
     background-color: rgb(124, 56, 245);
     position: static;
-    padding-left: 2px;
-    padding-right: 2px;
+    padding-left: 0.2em;
+    padding-right: 0.2em;
     text-align: left;
     margin-left: 5px;
     margin-top: 5px;

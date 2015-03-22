@@ -1,6 +1,7 @@
 from flask import Flask, send_from_directory
 from flask.ext.socketio import SocketIO, request
 from twitter_stream import StreamServer, StreamRequest, DebugStreamProducer
+from mobiledetect import MobileDetect
 import logging
 
 
@@ -23,7 +24,13 @@ stream_server = StreamServer()
 @app.route('/')
 def index():
     """Delivers client pay-load."""
-    return send_from_directory('templates', 'index.html')
+    print "made it to handler"
+    mobile_detect = MobileDetect(useragent=request.headers.get("User-Agent"))
+
+    if mobile_detect.is_mobile():
+        return send_from_directory('templates', 'index-mobile.html')
+    
+    return send_from_directory('templates', 'index-desktop.html')
 
 
 @socketio.on('connect', namespace='/twitter')
@@ -58,4 +65,4 @@ def on_disconnect():
 
 if __name__ == '__main__':
     # Run the web service (for debugging only)
-    socketio.run(app)
+    socketio.run(app, '0.0.0.0')
